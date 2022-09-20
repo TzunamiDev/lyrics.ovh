@@ -1,3 +1,5 @@
 node_modules
 yarn.lock
 docker-compose.prod.yml
+package-lock.json
+.env
