@@ -4,13 +4,20 @@ const request = require("request-promise");
 const cors = require("cors");
 var things = [];
 let appApi = express();
-let appFrontend = express();
+let appServer = express();
 const portApi = 8080;
-const portFrontend = 8081;
+const portServer = 80;
 
-appApi.use(cors());
+const API_KEY = process.env.API_KEY ? process.env.API_KEY : '';
 
-appApi.get("/v1/:artist/:title", function (req, res) {
+// appApi.use(cors());
+appServer.use(express.static("frontend"));
+
+appServer.get("/v1/:artist/:title", function (req, res) {
+
+  if(API_KEY !== '' && (req.headers.key !== API_KEY))
+    return res.status(401).send({ error: "Not authorized" })
+
   if (!req.params.artist || !req.params.title) {
     return res.status(400).send({ error: "Artist or title missing" });
   }
@@ -25,7 +32,7 @@ appApi.get("/v1/:artist/:title", function (req, res) {
     });
 });
 
-appApi.get("/suggest/:term", function (req, res) {
+appServer.get("/suggest/:term", function (req, res) {
   request({
     uri: "http://api.deezer.com/search?limit=15&q=" + req.params.term,
     json: true,
@@ -34,12 +41,12 @@ appApi.get("/suggest/:term", function (req, res) {
   });
 });
 
-appFrontend.use(express.static("frontend"));
 
-appApi.listen(portApi, function () {
-  console.log("API listening on port " + portApi);
-});
 
-appFrontend.listen(portFrontend, function () {
-  console.log("Frontend listening on port " + portFrontend);
+// appApi.listen(portApi, function () {
+//   console.log("API listening on port " + portApi);
+// });
+
+appServer.listen(portServer, function () {
+  console.log("Frontend listening on port " + portServer);
 });

@@ -1,21 +1,23 @@
-version: "3.7"
+version: "3.2"
 
 services:
   backend:
-    image: docker.ntag.fr/ovhlyrics:latest
+    build: ./
     logging:
       options:
         max-size: "10m"
         max-file: "3"
+    environment:
+      - API_KEY=${API_KEY}
     ports:
-      - "20050:8080"
-      - "20051:8081"
+      - "8080:80"
+    #   - "20051:8081"
     deploy:
       resources:
         limits:
           memory: 500M
           cpus: "0.5"
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 30s
