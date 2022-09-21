@@ -10,7 +10,7 @@ const portServer = 80;
 
 const API_KEY = process.env.API_KEY ? process.env.API_KEY : '';
 
-// appApi.use(cors());
+appServer.use(cors());
 appServer.use(express.static("frontend"));
 
 appServer.get("/v1/:artist/:title", function (req, res) {
